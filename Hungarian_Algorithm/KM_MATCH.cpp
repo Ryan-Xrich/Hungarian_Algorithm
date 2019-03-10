@@ -2,7 +2,7 @@
 #include "pch.h"
 
 // Only used for fcn_test
-// Initialise an empty matching with the cost matrix size
+// Initialize an empty matching with the cost matrix size
 KM_MATCH::KM_MATCH(const size_t & s)
 {
 	unsigned int i;
@@ -33,7 +33,7 @@ KM_MATCH::~KM_MATCH()
 	// Variables are all from Standard Template Library, no need to destruct.
 }
 
-// Initialise all other variables using the matrixsize
+// Initialize all other variables using the matrixsize
 void KM_MATCH::Initialise()
 {
 	unsigned int i;
@@ -110,11 +110,11 @@ size_t KM_MATCH::GetMatrix(const char & mode)
 						std::vector<float> temp_f(temp.begin() + i * matrixSize, temp.begin() + (i + 1) * matrixSize);
 						edge.push_back(temp_f);
 					}
-					Initialise();// Initialise all other variables using the matrixsize
+					Initialise();// Initialize all other variables using the matrixsize
 				}
 				else
 				{
-					std::cout << "Matrix is not squre!" << std::endl;
+					std::cout << "Matrix is not square!" << std::endl;
 					matrixSize = 0;
 					return 0;
 				}
@@ -235,7 +235,7 @@ size_t KM_MATCH::GetMatrix(const char & mode)
 					// Count the number of changes in the matrix, number of changes saved in rowCount and columnCount
 					FindMatrixChange(temp, row, column, rowCount, columnCount);
 
-					while (!(rowCount == 0 && columnCount == 0))// Repeat the dynamic Hungrian algorithm until all changes are re-matched
+					while (!(rowCount == 0 && columnCount == 0))// Repeat the dynamic Hungarian algorithm until all changes are re-matched
 					{
 						if (rowCount == 1 && columnCount == 1)// Single change value
 						{
@@ -323,18 +323,18 @@ size_t KM_MATCH::GetMatrix(const char & mode)
 void KM_MATCH::GenerateMatrix(const unsigned int & sizeM, const float & maxCost)
 {
 	unsigned int i, j;
-	std::vector<float> temp;
+	std::vector<float> temp;// Temporarily store the random float vector 
 
 	srand((unsigned)time(0));// Random Seed
 
-	if (maxCost >= 0)
+	if (maxCost >= 0)// Check if the max cost parameter is valid
 	{
-		matrixSize = sizeM;
+		matrixSize = sizeM;// Assign the matrix size
 		for (j = 0; j < matrixSize; j++)
 		{
-			temp.push_back(rand() % (int)maxCost);
+			temp.push_back(rand() % (int)maxCost);// Initialize the temp vector
 		}
-		edge.push_back(temp);
+		edge.push_back(temp);// Store the random values to the edge cost matrix
 
 		for (i = 0; i < matrixSize - 1; i++)
 		{
@@ -342,14 +342,14 @@ void KM_MATCH::GenerateMatrix(const unsigned int & sizeM, const float & maxCost)
 			{
 				temp[j] = rand() % (int)maxCost;
 			}
-			edge.push_back(temp);
+			edge.push_back(temp);// Store the random values to the edge cost matrix
 		}
 
 		Initialise();
 
 		//system("pause");// Only used for speed test
 
-		if (KuhnMunkresMatch())
+		if (KuhnMunkresMatch())// Do static Hungarian algorithm
 			PrintResult();
 		else
 			std::cout << "Assignment error!" << std::endl;
@@ -366,11 +366,11 @@ void KM_MATCH::GenerateMatrix(const unsigned int & sizeM, const float & maxCost)
 void KM_MATCH::GenerateMatrix(const float & maxCost)
 {
 	unsigned int i;
-	std::vector<float> temp;
+	std::vector<float> temp;// Temporarily store the random float vector 
 
-	srand((unsigned)time(0));
+	srand((unsigned)time(0));// Random Seed
 
-	if (maxCost >= 0)
+	if (maxCost >= 0)// Check if the max cost parameter is valid
 	{
 		matrixSize++;
 		for (i = 0; i < matrixSize - 1; i++)
@@ -379,10 +379,10 @@ void KM_MATCH::GenerateMatrix(const float & maxCost)
 			temp.push_back(rand() % (int)maxCost);
 		}
 		temp.push_back(rand() % (int)maxCost);
-		edge.push_back(temp);
+		edge.push_back(temp);// Store the random values to the edge cost matrix
 
 		IncrInitialise();
-		if (IncrAssignment())
+		if (IncrAssignment())// Do incremental Hungarian algorithm
 			PrintResult();
 		else
 			std::cout << "Assignment error!" << std::endl;
@@ -399,11 +399,11 @@ void KM_MATCH::GenerateMatrix(const float & maxCost)
 void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const unsigned int & changeRatio)
 {
 	unsigned int i, j;
-	std::vector<float> temp;
+	std::vector<float> temp;// Temporarily store the random float vector
 
-	srand((unsigned)time(0));
+	srand((unsigned)time(0));// Random Seed
 
-	if (maxCost >= 0 && changeRatio >= 0)
+	if (maxCost >= 0 && changeRatio >= 0)// Check if the max cost and change ratio parameters are valid
 	{
 		switch (mode)
 		{
@@ -736,7 +736,7 @@ bool KM_MATCH::KuhnMunkresMatch()
 	// Begin with an empty matching
 	unsigned int i, j;
 
-	// Assign feasible values tothe dual variables
+	// Assign feasible values to the dual variables
 	for (i = 0; i < matrixSize; i++)
 	{
 		for (j = 0; j < matrixSize; j++)

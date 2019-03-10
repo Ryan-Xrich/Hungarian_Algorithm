@@ -48,7 +48,7 @@ public:
 	void ClearAll();				// Warning!!! This function will reset all contents!
 
 	bool KuhnMunkresMatch();		// Static Hungarian algorithm
-	void IncrInitialise();			// Initilisation for incremental Hungarian algorithm
+	void IncrInitialise();			// Initialisation for incremental Hungarian algorithm
 	bool IncrAssignment();			// Incremental Hungarian algorithm
 
 	bool RowMatch(const unsigned int & iNew);	// Dynamic Hungarian algorithm with a row change
