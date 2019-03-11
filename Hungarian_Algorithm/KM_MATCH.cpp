@@ -418,9 +418,9 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 				{
 					for (j = 0; j < matrixSize; j++)
 					{
-						edge[i][j] = rand() % (int)maxCost;
+						edge[i][j] = rand() % (int)maxCost;// Modify the edge cost of this row
 					}
-					RowMatch(row);
+					RowMatch(row);// Do dynamic Hungarian algorithm with one row change
 					break;
 				}
 			}
@@ -439,12 +439,12 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 				{
 					for (i = 0; i < matrixSize; i++)
 					{
-						edge[i][j] = rand() % (int)maxCost;
+						edge[i][j] = rand() % (int)maxCost;// Modify the edge cost of this column
 					}
 
-					//system("pause");
+					//system("pause");// Only used for speed test
 					
-					ColumnMatch(column);
+					ColumnMatch(column);// Do dynamic Hungarian algorithm with one column change
 					break;
 				}
 			}
@@ -466,11 +466,11 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 					if (row == i && column == j)
 					{
 						cOld = edge[i][j];
-						edge[i][j] = rand() % (int)maxCost;
+						edge[i][j] = rand() % (int)maxCost;// Modify the edge cost of this single value
 
-						//system("pause");
+						//system("pause");// Only used for speed test
 
-						SingleMatch(i, j, cOld);
+						SingleMatch(i, j, cOld);// Do dynamic Hungarian algorithm with single value change
 					}
 				}
 			}
@@ -481,13 +481,13 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 		default:
 		{
 			std::vector<float> temp;
-			double ratio = double(changeRatio / 100);
+			double ratio = double(changeRatio / 100);// Calculate the change ratio
 
 			if (ratio >= 1)// If every values in the cost matrix are changed, do one static Hungarian algorithm
 			{
 				unsigned int tempSize = matrixSize;
-				ClearAll();
-				GenerateMatrix(tempSize, maxCost);
+				ClearAll();// This function will delete all data of this object
+				GenerateMatrix(tempSize, maxCost);// Do one static Hungarian algorithm
 			}
 			else
 			{
@@ -500,9 +500,9 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 				{
 					for (j = 0; j < matrixSize; j++)
 					{
-						if ((rand() % 100) <= maxCost)
+						if ((rand() % 100) <= maxCost)// Use random number to determine which numbers need to be changed
 						{
-							temp.push_back(rand() % (int)maxCost);
+							temp.push_back(rand() % (int)maxCost);// Modify the edge cost of this single value
 						}
 						else
 						{
@@ -525,7 +525,7 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 								{
 									cOld = edge[i][j];
 									edge[i][j] = temp.at(i*matrixSize + j);
-									SingleMatch(i, j, cOld);
+									SingleMatch(i, j, cOld);// Do dynamic Hungarian algorithm with single value change
 									row[i] = 0;
 									column[j] = 0;
 									rowCount--;
@@ -546,7 +546,7 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 									{
 										edge[i][j] = temp.at(i*matrixSize + j);
 									}
-									RowMatch(i);
+									RowMatch(i);// Do dynamic Hungarian algorithm with one row change
 									FindMatrixChange(temp, row, column, rowCount, columnCount);
 									break;
 								}
@@ -564,7 +564,7 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 										{
 											edge[i][j] = temp.at(i*matrixSize + j);
 										}
-										ColumnMatch(j);
+										ColumnMatch(j);// Do dynamic Hungarian algorithm with one column change
 										FindMatrixChange(temp, row, column, rowCount, columnCount);
 										break;
 									}
@@ -588,6 +588,7 @@ void KM_MATCH::GenerateMatrix(const char & mode, const float & maxCost, const un
 	}
 }
 
+// Save the cost matrix into a file
 void KM_MATCH::SaveMatrix()
 {
 	unsigned int loopTime = 0;
@@ -600,18 +601,18 @@ void KM_MATCH::SaveMatrix()
 	strftime(fileName, sizeof(fileName), "%Y-%m-%d_%H.%M.%S", &t);	// Format the date and time
 	strcat_s(fileName, sizeof(fileName), ".dat");					// Format the file name
 
-	std::string temp = fileName;
+	std::string temp = fileName;// Generate the string representing the file name to be write
 	std::ifstream matrixRead(temp);
 	while (matrixRead.is_open())
 	{
-		temp += (char)('0' + loopTime);
+		temp += (char)('0' + loopTime);// Deal with the existing file problem
 		loopTime++;
 		matrixRead.close();
 		std::ifstream matrixRead(temp);
 	}
 	matrixRead.close();
 
-	std::ofstream matrixWrite(temp, std::ios::out);
+	std::ofstream matrixWrite(temp, std::ios::out);// Normal condition, prepare for writing data to the file
 	for (unsigned int i = 0; i < matrixSize; i++)
 	{
 		for (unsigned int j = 0; j < matrixSize; j++)
@@ -627,6 +628,7 @@ void KM_MATCH::SaveMatrix()
 	std::cout << "Matrix saved at " << temp << std::endl;
 }
 
+// Save the result matching into a file
 void KM_MATCH::SaveResult()
 {
 	unsigned int loopTime = 0;
@@ -643,14 +645,14 @@ void KM_MATCH::SaveResult()
 	std::ifstream matrixRead(temp);
 	while (matrixRead.is_open())
 	{
-		temp += (char)('0' + loopTime);
+		temp += (char)('0' + loopTime);// Deal with the existing file problem
 		loopTime++;
 		matrixRead.close();
 		std::ifstream matrixRead(temp);
 	}
 	matrixRead.close();
 
-	std::ofstream matrixWrite(temp, std::ios::out);
+	std::ofstream matrixWrite(temp, std::ios::out);// Normal condition, prepare for writing data to the file
 	float cost = 0;
 	for (unsigned int i = 0; i < matrixSize; i++)
 	{
@@ -662,6 +664,7 @@ void KM_MATCH::SaveResult()
 	std::cout << "Result matching saved at " << fileName << std::endl;
 }
 
+// Print the result matching on screen
 void KM_MATCH::PrintResult()
 {
 	double cost = 0;
@@ -673,6 +676,7 @@ void KM_MATCH::PrintResult()
 	std::cout << "\nTotal cost is " << cost << "." << std::endl;
 }
 
+// Function to find the augment path
 bool KM_MATCH::FindAugmentPath(int xi)
 {
 	for (unsigned int yj = 0; yj < matrixSize; yj++)
@@ -680,21 +684,22 @@ bool KM_MATCH::FindAugmentPath(int xi)
 		// yj not on augment path && exist an edge between xi and yj
 		if (!this->y_on_path[yj] && this->subgraph[xi][yj])
 		{
-			this->y_on_path[yj] = true;
-			int xt = this->path[yj];
+			this->y_on_path[yj] = true;// Set yj on the augment path
+			int xt = this->path[yj];// Store path connected to yj
 			this->path[yj] = xi;
-			if (xt == -1 || FindAugmentPath(xt))
+			if (xt == -1 || FindAugmentPath(xt))// If yj doesn't have an augment path, or there's a path on xt
 			{
 				return true;
 			}
-			this->path[yj] = xt;
-			if (xt != -1)
-				this->x_on_path[xt] = true;
+			this->path[yj] = xt;// Get back the previous path connected to yj
+			if (xt != -1)// If yj does have an augment path
+				this->x_on_path[xt] = true;// Set xi on the augment path
 		}
 	}
 	return false;
 }
 
+// Reset all paths
 void KM_MATCH::ResetMatchPath()
 {
 	for (unsigned int i = 0; i < matrixSize; i++)
@@ -703,6 +708,7 @@ void KM_MATCH::ResetMatchPath()
 	}
 }
 
+// Reset all on-path signs
 void KM_MATCH::ClearOnPathSign()
 {
 	for (unsigned int i = 0; i < matrixSize; i++)
@@ -729,10 +735,9 @@ void KM_MATCH::ClearAll()
 	matrixSize = 0;
 }
 
+// Static Hungarian algorithm
 bool KM_MATCH::KuhnMunkresMatch()
 {
-	// Perform initialization:
-
 	// Begin with an empty matching
 	unsigned int i, j;
 
@@ -748,10 +753,10 @@ bool KM_MATCH::KuhnMunkresMatch()
 
 	unsigned int loopTime = 0;
 
-	while (loopTime <= (matrixSize * matrixSize * matrixSize))
+	while (loopTime <= (matrixSize * matrixSize * matrixSize))// To avoid infinite loop
 	{
 		float dx = 99999;// Assign the largest dx initial value
-		for (i = 0; i < matrixSize; i++)// Update the sub map
+		for (i = 0; i < matrixSize; i++)// Update the sub graph
 		{
 			for (j = 0; j < matrixSize; j++)
 			{
@@ -764,9 +769,9 @@ bool KM_MATCH::KuhnMunkresMatch()
 		for (unsigned int xi = 0; xi < matrixSize; xi++)
 		{
 			this->ClearOnPathSign();
-			if (this->FindAugmentPath(xi))
+			if (this->FindAugmentPath(xi))// If there's an augment path to xi
 			{
-				match++;
+				match++;// Find one match
 			}
 			else
 			{
@@ -786,19 +791,19 @@ bool KM_MATCH::KuhnMunkresMatch()
 			{
 				if (x_on_path[i] && !y_on_path[j])
 				{
-					dx = std::min(dx, edge[i][j] - A[i] - B[j]);
+					dx = std::min(dx, edge[i][j] - A[i] - B[j]);// Update dx
 				}
 			}
 		}
 
-		dx = dx / 2;
-		for (i = 0; i < matrixSize; i++)
+		dx = dx / 2;// Calculate the final dx value
+		for (i = 0; i < matrixSize; i++)// Modify the dual variables
 		{
-			if (x_on_path[i])
+			if (x_on_path[i])// If xi on augment path
 				A[i] += dx;
 			else
 				A[i] -= dx;
-			if (y_on_path[i])
+			if (y_on_path[i])// If yj on augment path
 				B[i] -= dx;
 			else
 				B[i] += dx;
@@ -809,6 +814,7 @@ bool KM_MATCH::KuhnMunkresMatch()
 	return false;
 }
 
+// Initialisation for incremental Hungarian algorithm
 void KM_MATCH::IncrInitialise()
 {
 	unsigned int i;
@@ -862,6 +868,7 @@ void KM_MATCH::IncrInitialise()
 }
 */
 
+// Incremental Hungarian algorithm
 bool KM_MATCH::IncrAssignment()
 {
 	// Perform initialization:
@@ -871,29 +878,29 @@ bool KM_MATCH::IncrAssignment()
 	float Aplus = 99999;	// An+1
 	float Bplus = 99999;	// Bn+1
 
-	// Assign feasible values to the dual variables
-
+	// Assign feasible values to the dual variable B. Note: B must be modified before A.
 	for (i = 0; i < (matrixSize - 1); i++)
 	{
 		Bplus = std::min(Bplus, edge[i][matrixSize - 1] - A[i]);
 	}
 
 	Bplus = std::min(Bplus, edge[matrixSize - 1][matrixSize - 1]);
-	B.push_back(Bplus);
+	B.push_back(Bplus);// Store the dual variable to the vector
 
+	// Assign feasible values to the dual variable A
 	for (j = 0; j < matrixSize; j++)
 	{
 		Aplus = std::min(Aplus, edge[matrixSize - 1][j] - B[j]);
 	}
-	A.push_back(Aplus);
+	A.push_back(Aplus);// Store the dual variable to the vector
 
 
 	unsigned int loopTime = 0;
 
-	while (loopTime <= (matrixSize * matrixSize * matrixSize))
+	while (loopTime <= (matrixSize * matrixSize * matrixSize))// To avoid infinite loop
 	{
-		float dx = 99999;
-		for (i = 0; i < matrixSize; i++)
+		float dx = 99999;// Assign the largest dx initial value
+		for (i = 0; i < matrixSize; i++)// Update the sub graph
 		{
 			for (j = 0; j < matrixSize; j++)
 			{
@@ -906,9 +913,9 @@ bool KM_MATCH::IncrAssignment()
 		for (unsigned int xi = 0; xi < matrixSize; xi++)
 		{
 			this->ClearOnPathSign();
-			if (this->FindAugmentPath(xi))
+			if (this->FindAugmentPath(xi))// If there's an augment path to xi
 			{
-				match++;
+				match++;// Find one match
 			}
 			else
 			{
@@ -917,7 +924,7 @@ bool KM_MATCH::IncrAssignment()
 			}
 		}
 
-		if (match == matrixSize)
+		if (match == matrixSize)// Count the number of matching
 		{
 			return true;
 		}
@@ -928,19 +935,19 @@ bool KM_MATCH::IncrAssignment()
 			{
 				if (x_on_path[i] && !y_on_path[j])
 				{
-					dx = std::min(dx, edge[i][j] - A[i] - B[j]);
+					dx = std::min(dx, edge[i][j] - A[i] - B[j]);// Update dx
 				}
 			}
 		}
 
-		dx = dx / 2;
-		for (i = 0; i < matrixSize; i++)
+		dx = dx / 2;// Calculate the final dx value
+		for (i = 0; i < matrixSize; i++)// Modify the dual variables
 		{
-			if (x_on_path[i])
+			if (x_on_path[i])// If xi on augment path
 				A[i] += dx;
 			else
 				A[i] -= dx;
-			if (y_on_path[i])
+			if (y_on_path[i])// If yj on augment path
 				B[i] -= dx;
 			else
 				B[i] += dx;
@@ -951,23 +958,24 @@ bool KM_MATCH::IncrAssignment()
 	return false;
 }
 
+// Dynamic Hungarian algorithm with a row change
 bool KM_MATCH::RowMatch(const unsigned int & iNew)
 {
 	unsigned int i, j;
 	float ANew = 99999;
 
-	if (iNew >= matrixSize)
+	if (iNew >= matrixSize)// Ensure the change is in the matrix range
 		return false;
 	else
 	{
 		for (i = 0; i < matrixSize; i++)
 		{
-			if (path[i] == iNew)
+			if (path[i] == iNew)// Find path_i*
 			{
-				path[i] = -1;
+				path[i] = -1;// Remove edge path_i*
 				for (j = 0; j < matrixSize; j++)
 				{
-					ANew = std::min(ANew, edge[iNew][j] - B[j]);
+					ANew = std::min(ANew, edge[iNew][j] - B[j]);// Modify the dual variable Ai*
 				}
 				A[iNew] = ANew;
 				break;
@@ -975,10 +983,10 @@ bool KM_MATCH::RowMatch(const unsigned int & iNew)
 		}
 		unsigned int loopTime = 0;
 
-		while (loopTime <= (matrixSize * matrixSize * matrixSize))
+		while (loopTime <= (matrixSize * matrixSize * matrixSize))// To avoid infinite loop
 		{
-			float dx = 99999;
-			for (i = 0; i < matrixSize; i++)
+			float dx = 99999;// Assign the largest dx initial value
+			for (i = 0; i < matrixSize; i++)// Update the sub graph
 			{
 				for (j = 0; j < matrixSize; j++)
 				{
@@ -991,9 +999,9 @@ bool KM_MATCH::RowMatch(const unsigned int & iNew)
 			for (unsigned int xi = 0; xi < matrixSize; xi++)
 			{
 				this->ClearOnPathSign();
-				if (this->FindAugmentPath(xi))
+				if (this->FindAugmentPath(xi))// If there's an augment path to xi
 				{
-					match++;
+					match++;// Find one match
 				}
 				else
 				{
@@ -1002,7 +1010,7 @@ bool KM_MATCH::RowMatch(const unsigned int & iNew)
 				}
 			}
 
-			if (match == matrixSize)
+			if (match == matrixSize)// Count the number of matching
 			{
 				return true;
 			}
@@ -1013,19 +1021,19 @@ bool KM_MATCH::RowMatch(const unsigned int & iNew)
 				{
 					if (x_on_path[i] && !y_on_path[j])
 					{
-						dx = std::min(dx, edge[i][j] - A[i] - B[j]);
+						dx = std::min(dx, edge[i][j] - A[i] - B[j]);// Update dx
 					}
 				}
 			}
 
-			dx = dx / 2;
-			for (i = 0; i < matrixSize; i++)
+			dx = dx / 2;// Calculate the final dx value
+			for (i = 0; i < matrixSize; i++)// Modify the dual variables
 			{
-				if (x_on_path[i])
+				if (x_on_path[i])// If xi on augment path
 					A[i] += dx;
 				else
 					A[i] -= dx;
-				if (y_on_path[i])
+				if (y_on_path[i])// If yj on augment path
 					B[i] -= dx;
 				else
 					B[i] += dx;
@@ -1037,28 +1045,29 @@ bool KM_MATCH::RowMatch(const unsigned int & iNew)
 	}
 }
 
+// Dynamic Hungarian algorithm with a column change
 bool KM_MATCH::ColumnMatch(const unsigned int & jNew)
 {
 	unsigned int i, j;
 	float BNew = 99999;
 
-	if (jNew >= matrixSize)
+	if (jNew >= matrixSize)// Ensure the change is in the matrix range
 		return false;
 	else
 	{
-		path[jNew] = -1;
+		path[jNew] = -1;// Remove edge path_j*
 		for (i = 0; i < matrixSize; i++)
 		{
-			BNew = std::min(BNew, edge[i][jNew] - A[i]);
+			BNew = std::min(BNew, edge[i][jNew] - A[i]);// Modify the dual variable Bj*
 		}
 		B[jNew] = BNew;
 
 		unsigned int loopTime = 0;
 
-		while (loopTime <= (matrixSize * matrixSize * matrixSize))
+		while (loopTime <= (matrixSize * matrixSize * matrixSize))// To avoid infinite loop
 		{
-			float dx = 99999;
-			for (i = 0; i < matrixSize; i++)
+			float dx = 99999;// Assign the largest dx initial value
+			for (i = 0; i < matrixSize; i++)// Update the sub graph
 			{
 				for (j = 0; j < matrixSize; j++)
 				{
@@ -1071,9 +1080,9 @@ bool KM_MATCH::ColumnMatch(const unsigned int & jNew)
 			for (unsigned int xi = 0; xi < matrixSize; xi++)
 			{
 				this->ClearOnPathSign();
-				if (this->FindAugmentPath(xi))
+				if (this->FindAugmentPath(xi))// If there's an augment path to xi
 				{
-					match++;
+					match++;// Find one match
 				}
 				else
 				{
@@ -1082,7 +1091,7 @@ bool KM_MATCH::ColumnMatch(const unsigned int & jNew)
 				}
 			}
 
-			if (match == matrixSize)
+			if (match == matrixSize)// Count the number of matching
 			{
 				return true;
 			}
@@ -1093,19 +1102,19 @@ bool KM_MATCH::ColumnMatch(const unsigned int & jNew)
 				{
 					if (x_on_path[i] && !y_on_path[j])
 					{
-						dx = std::min(dx, edge[i][j] - A[i] - B[j]);
+						dx = std::min(dx, edge[i][j] - A[i] - B[j]);// Update dx
 					}
 				}
 			}
 
-			dx = dx / 2;
-			for (i = 0; i < matrixSize; i++)
+			dx = dx / 2;// Calculate the final dx value
+			for (i = 0; i < matrixSize; i++)// Modify the dual variables
 			{
-				if (x_on_path[i])
+				if (x_on_path[i])// If xi on augment path
 					A[i] += dx;
 				else
 					A[i] -= dx;
-				if (y_on_path[i])
+				if (y_on_path[i])// If yj on augment path
 					B[i] -= dx;
 				else
 					B[i] += dx;
@@ -1117,40 +1126,41 @@ bool KM_MATCH::ColumnMatch(const unsigned int & jNew)
 	}
 }
 
+// Dynamic Hungarian algorithm with a value change
 bool KM_MATCH::SingleMatch(const unsigned int & iNew, const unsigned int & jNew, const float & cOld)
 {
 	unsigned int i, j;
 	float BNew = 99999;
 
-	if (iNew >= matrixSize || jNew >= matrixSize)
+	if (iNew >= matrixSize || jNew >= matrixSize)// Ensure the change is in the matrix range
 		return false;
 	else
 	{
-		if (edge[iNew][jNew] > cOld && path[jNew] == iNew)
+		if (edge[iNew][jNew] > cOld && path[jNew] == iNew)// If C_New > C_Old, and exists an augment path between j* and i*
 		{
-			path[jNew] = -1;
+			path[jNew] = -1;// Disconnect all paths from j*
 		}
 		else
 		{
-			if (edge[iNew][jNew] < cOld && A[iNew] + B[jNew] > edge[iNew][jNew])
+			if (edge[iNew][jNew] < cOld && A[iNew] + B[jNew] > edge[iNew][jNew])// If C_New < C_Old, and Ai* + Bj* > C_New
 			{
 				for (i = 0; i < matrixSize; i++)
 				{
-					BNew = std::min(BNew, edge[i][jNew] - A[i]);
+					BNew = std::min(BNew, edge[i][jNew] - A[i]);// Calculate Bj*
 				}
 				B[jNew] = BNew;
 			}
-			if (path[jNew] != iNew)
+			if (path[jNew] != iNew)// If there doesn't exist an augment path between j* and i*
 			{
-				path[jNew] = -1;
+				path[jNew] = -1;// Disconnect all paths from j*
 			}
 		}
 		unsigned int loopTime = 0;
 
-		while (loopTime <= (matrixSize * matrixSize * matrixSize))
+		while (loopTime <= (matrixSize * matrixSize * matrixSize))// To avoid infinite loop
 		{
-			float dx = 99999;
-			for (i = 0; i < matrixSize; i++)
+			float dx = 99999;// Assign the largest dx initial value
+			for (i = 0; i < matrixSize; i++)// Update the sub graph
 			{
 				for (j = 0; j < matrixSize; j++)
 				{
@@ -1163,9 +1173,9 @@ bool KM_MATCH::SingleMatch(const unsigned int & iNew, const unsigned int & jNew,
 			for (unsigned int xi = 0; xi < matrixSize; xi++)
 			{
 				this->ClearOnPathSign();
-				if (this->FindAugmentPath(xi))
+				if (this->FindAugmentPath(xi))// If there's an augment path to xi
 				{
-					match++;
+					match++;// Find one match
 				}
 				else
 				{
@@ -1174,7 +1184,7 @@ bool KM_MATCH::SingleMatch(const unsigned int & iNew, const unsigned int & jNew,
 				}
 			}
 
-			if (match == matrixSize)
+			if (match == matrixSize)// Count the number of matching
 			{
 				return true;
 			}
@@ -1185,19 +1195,19 @@ bool KM_MATCH::SingleMatch(const unsigned int & iNew, const unsigned int & jNew,
 				{
 					if (x_on_path[i] && !y_on_path[j])
 					{
-						dx = std::min(dx, edge[i][j] - A[i] - B[j]);
+						dx = std::min(dx, edge[i][j] - A[i] - B[j]);// Update dx
 					}
 				}
 			}
 
-			dx = dx / 2;
-			for (i = 0; i < matrixSize; i++)
+			dx = dx / 2;// Calculate the final dx value
+			for (i = 0; i < matrixSize; i++)// Modify the dual variables
 			{
-				if (x_on_path[i])
+				if (x_on_path[i])// If xi on augment path
 					A[i] += dx;
 				else
 					A[i] -= dx;
-				if (y_on_path[i])
+				if (y_on_path[i])// If yj on augment path
 					B[i] -= dx;
 				else
 					B[i] += dx;
@@ -1209,19 +1219,21 @@ bool KM_MATCH::SingleMatch(const unsigned int & iNew, const unsigned int & jNew,
 	}
 }
 
+// Check if the number has root square
 bool KM_MATCH::isSqrt(const int & n)
 {
 	int a = int(sqrt(n) + 0.5);
 	return a * a == n;
 }
 
+// Count the number of changes in the matrix, number of changes saved in rowCount and columnCount
 void KM_MATCH::FindMatrixChange(const std::vector<float> & temp, std::vector<bool> & row, std::vector<bool> & column, unsigned int & rowCount, unsigned int & columnCount)
 {
 	unsigned int i, j;
 	rowCount = 0;
 	columnCount = 0;
 
-	for (i = 0; i < matrixSize; i++)
+	for (i = 0; i < matrixSize; i++)// Initialize the row and column vectors
 	{
 		row[i] = 0;
 		column[i] = 0;
@@ -1231,7 +1243,7 @@ void KM_MATCH::FindMatrixChange(const std::vector<float> & temp, std::vector<boo
 	{
 		for (j = 0; j < matrixSize; j++)
 		{
-			if (temp.at(i*matrixSize + j) != edge[i][j])
+			if (temp.at(i*matrixSize + j) != edge[i][j])// Compare the values with the edge cost matrix
 			{
 				row[i] = 1;
 				column[j] = 1;
@@ -1239,7 +1251,7 @@ void KM_MATCH::FindMatrixChange(const std::vector<float> & temp, std::vector<boo
 		}
 	}
 
-	for (i = 0; i < matrixSize; i++)
+	for (i = 0; i < matrixSize; i++)// Update the row and column count numbers
 	{
 		if (row[i] == 1)
 		{
