@@ -403,3 +403,120 @@ int fcn_test(size_t s)
 
 	return 0;
 }
+
+/*
+int flag(1);
+
+	while (flag)		// if the program runs into infinite loops, restart the program and enter again
+	{
+		system("cls");
+		std::cout << "This program implements the Hungarian algorithms.\n" << std::endl;
+		std::cout << "Please enter the option:\n\t1 - Get matrix from the file\n\t2 - Randomly Generate the matrix\n\t3 - Exit";
+		int option(0);
+		std::cin >> option;
+		while (1)
+		{
+			if (!std::cin || option <= 0 || option > 3)	// check the validity of the int type number
+			{
+				std::cout << "\nError! Please enter the option:\n\t1 - Get matrix from the file\n\t2 - Randomly Generate the matrix\n\t3 - Exit";
+				std::cin.clear();	// Clear istream
+				std::cin.ignore(1024, '\n');
+				std::cin >> option;
+			}
+			else
+				break;
+		}
+		system("cls");
+
+		switch (option)
+		{
+		case 1:
+		{
+			KM_MATCH km;
+			km.GetMatrix('s');
+			std::cout << "Please enter the option:\n\t1 - Incremental Hungarian Algorithm\n\t2 - Dynamic Hungarian Algorithm\n\t3 - Save current results\n\t4 - Exit";
+			std::cin >> option;
+			while (1)
+			{
+				if (!std::cin || option <= 0 || option > 4)	// check the validity of the int type number
+				{
+					std::cout << "\nError! Please enter the option:\n\t1 - Incremental Hungarian Algorithm\n\t2 - Dynamic Hungarian Algorithm\n\t3 - Save current results\n\t4 - Exit";
+					std::cin.clear();	// Clear istream
+					std::cin.ignore(1024, '\n');
+					std::cin >> option;
+				}
+				else
+					break;
+			}
+			switch (option)
+			{
+			case 1:
+			{
+				km.GetMatrix('i');
+				std::cout << "Please enter the option:\n\t1 - Save current results\n\t2 - Exit";
+				std::cin >> option;
+				while (1)
+				{
+					if (!std::cin || option <= 0 || option > 2)	// check the validity of the int type number
+					{
+						std::cout << "\nError! Please enter the option:\n\t1 - Save current results\n\t2 - Exit";
+						std::cin.clear();	// Clear istream
+						std::cin.ignore(1024, '\n');
+						std::cin >> option;
+					}
+					else
+						break;
+				}
+				switch (option)
+				{
+				case 1:
+				{
+					km.SaveResult();
+					break;
+				}
+				case 2:
+				{
+					std::cout << "\nThanks for using the program!";
+					return 0;
+				}
+				}
+				break;
+			}
+			case 2:
+			{
+				km.GetMatrix('d');
+				std::cout << "Please enter the option:\n\t1 - Save current results\n\t2 - Exit";
+				std::cin >> option;
+				while (1)
+				{
+					if (!std::cin || option <= 0 || option > 2)	// check the validity of the int type number
+					{
+						std::cout << "\nError! Please enter the option:\n\t1 - Save current results\n\t2 - Exit";
+						std::cin.clear();	// Clear istream
+						std::cin.ignore(1024, '\n');
+						std::cin >> option;
+					}
+					else
+						break;
+				}
+				switch (option)
+				{
+				case 1:
+				{
+					km.SaveResult();
+					break;
+				}
+				case 2:
+				{
+					std::cout << "\nThanks for using the program!";
+					return 0;
+				}
+				}
+				break;
+			}
+			}
+			}
+			break;
+		}
+		}
+*/
